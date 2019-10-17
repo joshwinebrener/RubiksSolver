@@ -3,7 +3,7 @@ from cross import cross
 
 cube = Cube()
 cube.printFaces()
-cube.input()
+# cube.input()
 # cube.scramble()
 cube.turn('w',3)
 # cross(cube)
