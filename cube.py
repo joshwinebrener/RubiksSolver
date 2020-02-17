@@ -95,21 +95,48 @@ class Cube:
         print('Type in the color of the stickers around each center piece:')
         print('w for white, r for red, b for blue, o for orange, g for green, and y for yellow')
         print('type q to quit')
-        j = 0
-        for i in range(9):
-            if i <3 or i >= 6:
-                print('-  -  -  {0:2d} {1:2d} {2:2d}  -  -  -  -  -  -'.format(j, j+1, j+2))
-                j += 3
-            elif i < 6:
-                print('{0:2d} {1:2d} {2:2d} {3:2d} {4:2d} {5:2d} {6:2d} {7:2d} {8:2d} {9:2d} {10:2d} {11:2d}'.format(j, j+1, j+2, j+3, j+4, j+5, j+6, j+7, j+8, j+9, j+10, j+11))
-                j += 9
-        faces = []
-        i = 0
-        while i < 44:
-            face = input('face {0}: '.format(i))
-            if face == 'w' or face == 'r' or face == 'b' or face == 'o' or face == 'g' or face == 'y':
-                faces.insert(i, face)
-            elif face == 'q':
+        # j = 0
+        # for i in range(9):
+        #     if i <3 or i >= 6:
+        #         print('-  -  -  {0:2d} {1:2d} {2:2d}  -  -  -  -  -  -'.format(j, j+1, j+2))
+        #         j += 3
+        #     elif i < 6:
+        #         print('{0:2d} {1:2d} {2:2d} {3:2d} {4:2d} {5:2d} {6:2d} {7:2d} {8:2d} {9:2d} {10:2d} {11:2d}'.format(j, j+1, j+2, j+3, j+4, j+5, j+6, j+7, j+8, j+9, j+10, j+11))
+        #         j += 9
+        # faces = []
+        # i = 0
+        # while i < 44:
+            # face = input('face {0}: '.format(i))
+            # if face == 'w' or face == 'r' or face == 'b' or face == 'o' or face == 'g' or face == 'y':
+            #     faces.insert(i, face)
+            # elif face == 'q':
+            #     print('quitting cube input...\n')
+            #     faces = []
+            #     break
+            # else:
+            #     print('not a valid color.  Make sure that the input character was w, r, b, o, g, or y.\nTrying again...')
+            #     i -= 1
+            # i += 1
+
+        # Top face:
+        print('-  -  -  1  2  3  -  -  -  -  -  -')
+        print('-  -  -  4  w  5  -  -  -  -  -  -')
+        print('-  -  -  6  7  8  -  -  -  -  -  -')
+        print('9  10 11 17 18 19 25 26 27 33 34 35')
+        print('12 g  13 20 r  21 28 b  29 36 o  37')
+        print('14 15 16 22 23 24 30 31 32 38 39 40')
+        print('-  -  - 41 42 43  -  -  -  -  -  -')
+        print('-  -  - 44 y  45  -  -  -  -  -  -')
+        print('-  -  - 46 47 48  -  -  -  -  -  -')
+
+        colors = []
+
+        # Collect colors from user
+        for i in range(48):
+            color = input('face {0}: '.format(i + 1))
+            if color == 'w' or color == 'r' or color == 'b' or color == 'o' or color == 'g' or color == 'y':
+                colors.insert(i, color)
+            elif color == 'q':
                 print('quitting cube input...\n')
                 faces = []
                 break
@@ -117,6 +144,25 @@ class Cube:
                 print('not a valid color.  Make sure that the input character was w, r, b, o, g, or y.\nTrying again...')
                 i -= 1
             i += 1
+        
+        # Arrange colors as faces
+        for i in range(48):
+            face = math.floor(i / 8)
+            # TODO: add 2nd and 3rd dimension with mod function
+            if face == 0: # White face
+                z = 2
+            elif face == 1: # Green face
+                y = -2
+            elif face == 2: # Red face
+                x = 2
+            elif face == 3: # Blue face
+                y = 2
+            elif face == 4: # Orange face
+                x = -2
+            elif face == 5: # Yellow face
+                z = -2
+
+
     
     def printFaces(self):
         # Initialize a 9x12 2d list of characters.  These will represent the colors of 
