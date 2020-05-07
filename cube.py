@@ -22,74 +22,71 @@ class Cube:
                 self.faces.append(Face(x, -2, z, 'g'))
         return
 
-    # Side is int for random generation.
+    # Side can be int for random generation.
     # Num is the number of clockwise quarter turns.  Set num to 3 for a back turn
     def turn(self, side, num):
         # Convert number of clockwise quarter turns to counterclockwise radians
         _theta = num % 4 * - math.pi / 2
+        sinTheta = int(round(math.sin(_theta)))
+        cosTheta = int(round(math.cos(_theta)))
 
         # Transform the coordinates of the faces depending on which side they are on
         for face in self.faces:
             # Side 1 is white
             if (side == 1 or side == 'w') and face.z > 0:
-                _x = face.x * int(round(math.cos(-_theta))) - face.y * int(round(math.sin(-_theta)))
-                _y = face.x * int(round(math.sin(-_theta))) + face.y * int(round(math.cos(-_theta)))              
+                # [cos -sin 0] [x]
+                # [sin cos  0]*[y]
+                # [0   0    1] [z]
+                _x = face.x * cosTheta - face.y * sinTheta
+                _y = face.x * sinTheta + face.y * cosTheta
                 face.x = _x
                 face.y = _y
             # Side 2 is red
-            elif (side == 2 or side == 'r') and face.y > 0:
-                _x = face.x * int(round(math.cos(_theta))) - face.z * int(round(math.sin(_theta)))
-                _z = face.x * int(round(math.sin(_theta))) + face.z * int(round(math.cos(_theta)))
-                face.x = _x
+            elif (side == 2 or side == 'r') and face.x > 0:
+                # [1 0   0   ] [x]
+                # [0 cos -sin]*[y]
+                # [0 sin cos ] [z]
+                _y = face.y * cosTheta - face.z * sinTheta
+                _z = face.y * sinTheta + face.z * cosTheta
+                face.y = _y
                 face.z = _z
             # Side 3 is blue
-            elif (side == 3 or side == 'b') and face.x > 0:
-                _y = face.y * int(round(math.cos(-_theta))) - face.z * int(round(math.sin(-_theta)))
-                _z = face.y * int(round(math.sin(-_theta))) + face.z * int(round(math.cos(-_theta)))
-                face.y = _y
-                face.z = _z
-            # Side 4 is orange
-            elif (side == 4 or side == 'o') and face.y < 0:
-                _x = face.x * int(round(math.cos(-_theta))) - face.z * int(round(math.sin(-_theta)))
-                _z = face.x * int(round(math.sin(-_theta))) + face.z * int(round(math.cos(-_theta)))
+            elif (side == 3 or side == 'b') and face.y > 0:
+                # [cos  0 sin] [x]
+                # [0    1 0  ]*[y]
+                # [-sin 0 cos] [z]
+                _x = face.x * cosTheta + face.z * sinTheta
+                _z = -face.x * sinTheta + face.z * cosTheta
                 face.x = _x
                 face.z = _z
-            # Side 5 is green
-            elif (side == 5 or side == 'g') and face.x < 0:
-                _y = face.y * int(round(math.cos(_theta))) - face.z * int(round(math.sin(_theta)))
-                _z = face.y * int(round(math.sin(_theta))) + face.z * int(round(math.cos(_theta)))
+            # Side 4 is orange
+            elif (side == 4 or side == 'o') and face.x < 0:
+                # [1 0   0   ] [x]
+                # [0 cos sin ]*[y]
+                # [0 -sin cos] [z]
+                _y = face.y * cosTheta + face.z * sinTheta
+                _z = -face.y * sinTheta + face.z * cosTheta
                 face.y = _y
+                face.z = _z
+            # Side 5 is green
+            elif (side == 5 or side == 'g') and face.y < 0:
+                # [cos 0 -sin] [x]
+                # [0   1 0   ]*[y]
+                # [sin 0 cos ] [z]
+                _x = face.x * cosTheta - face.z * sinTheta
+                _z = face.x * sinTheta + face.z * cosTheta
+                face.x = _x
                 face.z = _z
             # Side 6 is yellow
             elif (side == 6 or side == 'y') and face.z < 0:
-                _x = face.x * int(round(math.cos(_theta))) - face.y * int(round(math.sin(_theta)))
-                _y = face.x * int(round(math.sin(_theta))) + face.y * int(round(math.cos(_theta)))
+                # [cos  sin 0] [x]
+                # [-sin cos 0]*[y]
+                # [0    0   1] [z]
+                _x = face.x * cosTheta + face.y * sinTheta
+                _y = -face.x * sinTheta + face.y * cosTheta
                 face.x = _x
                 face.y = _y
         return
-
-    # A match is defined as an edge lined up with either a corner or 2 centers
-    def numOfMatches(self):
-        _edgeFaces = []
-        _cornerFaces = []
-        _centerFaces = []
-        numOfMatches = 0
-        # Sort face array into three new arrays, _edgeFaces, _cornerFaces, and _centerFaces
-        for face in self.faces:
-            if sorted([abs(face.x), abs(face.y), abs(face.z)]) == [0, 1, 2]:
-                _edgeFaces.append(face)
-            if sorted([abs(face.x), abs(face.y), abs(face.z)]) == [1, 1, 2]:
-                _cornerFaces.append(face)
-            else:
-                _centerFaces.append(face)
-        for ef in _edgeFaces:
-            for cf in _cornerFaces:
-                if (ef.x == cf.x and ef.y == cf.y) or (ef.y == cf.y and ef.z == cf.z) or (ef.x == cf.x and ef.z == cf.z):
-                    numOfMatches += 1
-            # for cf in _centerFaces:
-            #     if (ef.x == cf.x and ef.y == cf.y) or (ef.y == cf.y and ef.z == cf.z) or (ef.x == cf.x and ef.z == cf.z):
-            #         numOfMatches += 1
-        return numOfMatches
 
     def input(self):
         print('Type in the color of the stickers around each center piece:')
@@ -194,10 +191,11 @@ class Cube:
         for face in self.faces:
             # insert top faces
             if face.z == 2:
-                _colors[face.y + 1][face.x + 4] = face.color
+                _colors[face.x + 1][face.y + 4] = face.color
             # insert bottom faces
             elif face.z == -2:
-                _colors[-face.y + 7][face.x + 4] = face.color
+                _colors[-face.x + 7][face.y + 4] = face.color
+            # insert front faces
             elif face.x == 2:
                 _colors[-face.z + 4][face.y + 4] = face.color
             # insert back faces
@@ -210,11 +208,40 @@ class Cube:
             elif face.y == -2:
                 _colors[-face.z + 4][face.x + 1] = face.color
         
-        print(' ----------------------- ')
+        print('*-----------------------*')
         for y in range(9):
             print('|' + ' '.join(_colors[y]) + '|')
-        print(' ----------------------- ')
+        print('*-----------------------*\n')
         return
+    
+    def sisterFaces(self, face):
+        adj = face.adjacentCoordinates()
+        if len(adj) == 6:
+            return [self.at(adj[0], adj[1], adj[2]), self.at(adj[3], adj[4], adj[5])]
+        else:
+            return self.at(adj[0], adj[1], adj[2])
+
+    def at(self, x, y, z):
+        for face in self.faces:
+            if face.x == x and face.y == y and face.z == z:
+                return face
+        print("Face not found with coordinates ", str(x), str(y), str(z))
+        return
+    
+    # def onCorrectSide(self, face):
+    #     if face.x == 2:
+    #         return face.color == 'r'
+    #     elif face.y == 2:
+    #         return face.color == 'b'
+    #     elif face.z == 2:
+    #         return face.color == 'w'
+    #     elif face.x == -2:
+    #         return face.color == 'o'
+    #     elif face.y == -2:
+    #         return face.color == 'g'
+    #     elif face.z == -2:
+    #         return face.color == 'y'
+        
     
     def scramble(self):
         for i in range(20):
