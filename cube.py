@@ -20,13 +20,17 @@ class Cube:
             for z in range(-1, 2):
                 self.faces.append(Face(x, 2, z, 'b'))
                 self.faces.append(Face(x, -2, z, 'g'))
+
+        self.turnHistory = ''
+
         return
 
     # Side can be int for random generation.
     # Num is the number of clockwise quarter turns.  Set num to 3 for a back turn
     def turn(self, side, num):
         # Convert number of clockwise quarter turns to counterclockwise radians
-        _theta = num % 4 * - math.pi / 2
+        num %= 4
+        _theta = num * - math.pi / 2
         sinTheta = int(round(math.sin(_theta)))
         cosTheta = int(round(math.cos(_theta)))
 
@@ -86,6 +90,27 @@ class Cube:
                 _y = -face.x * sinTheta + face.y * cosTheta
                 face.x = _x
                 face.y = _y
+
+        # log moves so we can print solution
+        for i in range(num):
+            if side == 'w' or side == 1:
+                self.turnHistory += "W"
+            elif side == "r" or side == 2:
+                self.turnHistory += "R"
+            elif side == "b" or side == 3:
+                self.turnHistory += "B"
+            elif side == "o" or side == 4:
+                self.turnHistory += "O"
+            elif side == "g" or side == 5:
+                self.turnHistory += "G"
+            elif side == "y" or side == 6:
+                self.turnHistory += "Y"
+
+        # if num == 3:
+        #     self.turnHistory += "'"
+        # elif num == 2:
+        #     self.turnHistory += "2"
+        
         return
 
     def input(self):
@@ -144,8 +169,8 @@ class Cube:
             face = math.floor(i / 8)
             if face == 0: # White face
                 z = 2
-                x = index % 3 - 1 # Mod left to right
-                y = math.floor(index / 3) - 1 # Division top to bottom
+                y = index % 3 - 1 # Mod left to right
+                x = math.floor(index / 3) - 1 # Division top to bottom
             elif face == 1: # Green face
                 y = -2
                 x = index % 3 - 1
@@ -164,8 +189,8 @@ class Cube:
                 z = 1 - math.floor(index / 3)
             elif face == 5: # Yellow face
                 z = -2
-                x = index % 3 - 1
-                y = 1 - math.floor(index / 3)
+                y = index % 3 - 1
+                x = 1 - math.floor(index / 3)
                 
             self.faces.append(Face(x, y, z, colors[i]))
         
@@ -180,6 +205,29 @@ class Cube:
 
     
     def printFaces(self):
+        # Format turn history
+        # self.turnHistory = self.turnHistory.replace("WWWW", "")
+        # self.turnHistory = self.turnHistory.replace("RRRR", "")
+        # self.turnHistory = self.turnHistory.replace("BBBB", "")
+        # self.turnHistory = self.turnHistory.replace("OOOO", "")
+        # self.turnHistory = self.turnHistory.replace("GGGG", "")
+        # self.turnHistory = self.turnHistory.replace("YYYY", "")
+
+        self.turnHistory = self.turnHistory.replace("WWW", "W'")
+        self.turnHistory = self.turnHistory.replace("RRR", "R'")
+        self.turnHistory = self.turnHistory.replace("BBB", "B'")
+        self.turnHistory = self.turnHistory.replace("OOO", "O'")
+        self.turnHistory = self.turnHistory.replace("GGG", "G'")
+        self.turnHistory = self.turnHistory.replace("YYY", "Y'")
+
+        self.turnHistory = self.turnHistory.replace("WW", "W2")
+        self.turnHistory = self.turnHistory.replace("RR", "R2")
+        self.turnHistory = self.turnHistory.replace("BB", "B2")
+        self.turnHistory = self.turnHistory.replace("OO", "O2")
+        self.turnHistory = self.turnHistory.replace("GG", "G2")
+        self.turnHistory = self.turnHistory.replace("YY", "Y2")
+
+        
         # Initialize a 9x12 2d list of characters.  These will represent the colors of 
         # the faces, with spaces where there is no face.
         _colors = []
@@ -208,6 +256,7 @@ class Cube:
             elif face.y == -2:
                 _colors[-face.z + 4][face.x + 1] = face.color
         
+        print('Turn history: ' + self.turnHistory)
         print('*-----------------------*')
         for y in range(9):
             print('|' + ' '.join(_colors[y]) + '|')
@@ -246,3 +295,4 @@ class Cube:
     def scramble(self):
         for i in range(20):
             self.turn(randrange(1, 7), randrange(1, 4))
+        self.turnHistory = ''

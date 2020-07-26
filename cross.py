@@ -35,5 +35,4 @@ def cross(cube):
                 while (not cube.sisterFaces(face).onCorrectSide()):
                     cube.turn ('y', 1)
                 cube.turn(face.adjacentSide(), 2)
-        # TODO: break when all 4 white edge pieces have been moved
     return
